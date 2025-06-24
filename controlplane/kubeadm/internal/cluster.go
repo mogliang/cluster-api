@@ -105,7 +105,7 @@ func (m *Management) GetMachinePoolsForCluster(ctx context.Context, cluster *clu
 func (m *Management) GetWorkloadCluster(ctx context.Context, clusterKey client.ObjectKey) (WorkloadCluster, error) {
 	// TODO(chuckha): Inject this dependency.
 	// TODO(chuckha): memoize this function. The workload client only exists as long as a reconciliation loop.
-	restConfig, err := m.ClusterCache.GetRESTConfigFromSecret(ctx, clusterKey)
+	restConfig, err := m.ClusterCache.GetRESTConfig(ctx, clusterKey)
 	if err != nil {
 		return nil, &RemoteClusterConnectionError{Name: clusterKey.String(), Err: err}
 	}
