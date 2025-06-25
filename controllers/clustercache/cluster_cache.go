@@ -137,10 +137,6 @@ type ClusterCache interface {
 	// If there is no connection to the workload cluster ErrClusterNotConnected will be returned.
 	GetRESTConfig(ctx context.Context, cluster client.ObjectKey) (*rest.Config, error)
 
-	// GetRESTConfigFromSecret returns a REST config for the given cluster.
-	// It reads the REST config from kubeconfig secret directly.
-	GetRESTConfigFromSecret(ctx context.Context, cluster client.ObjectKey) (*rest.Config, error)
-
 	// GetClientCertificatePrivateKey returns a private key that is generated once for a cluster
 	// and can then be used to generate client certificates. This is e.g. used in KCP to generate a client
 	// cert to communicate with etcd.
@@ -386,14 +382,6 @@ func (cc *clusterCache) GetRESTConfig(ctx context.Context, cluster client.Object
 		return nil, errors.Wrapf(ErrClusterNotConnected, "error getting REST config")
 	}
 	return accessor.GetRESTConfig(ctx)
-}
-
-func (cc *clusterCache) GetRESTConfigFromSecret(ctx context.Context, cluster client.ObjectKey) (*rest.Config, error) {
-	accessor := cc.getClusterAccessor(cluster)
-	if accessor == nil {
-		return nil, errors.Wrapf(ErrClusterNotConnected, "error getting REST config")
-	}
-	return accessor.GetRESTConfigFromSecret(ctx)
 }
 
 func (cc *clusterCache) GetClientCertificatePrivateKey(ctx context.Context, cluster client.ObjectKey) (*rsa.PrivateKey, error) {

@@ -426,19 +426,6 @@ func (ca *clusterAccessor) KubeConfigUpdated(ctx context.Context) (bool, error) 
 	return kubeconfigSecret.ResourceVersion != ca.lockedState.kubeconfigResourceVersion, nil
 }
 
-func (ca *clusterAccessor) GetRESTConfigFromSecret(ctx context.Context) (*rest.Config, error) {
-	ca.rLock(ctx)
-	defer ca.rUnlock(ctx)
-
-	log := ctrl.LoggerFrom(ctx)
-	log.V(6).Info("Creating REST config")
-	restConfig, err := createRESTConfig(ctx, ca.config.Client, ca.config.SecretClient, ca.cluster)
-	if err != nil {
-		return nil, err
-	}
-	return restConfig, nil
-}
-
 func (ca *clusterAccessor) GetClientCertificatePrivateKey(ctx context.Context) *rsa.PrivateKey {
 	ca.rLock(ctx)
 	defer ca.rUnlock(ctx)
